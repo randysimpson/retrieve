@@ -17,7 +17,7 @@ type MongoMetric struct {
 	Metric string `bson:"metric,omitempty"`
 	Source string `bson:"source,omitempty"`
 	Tags map[string]interface{} `bson:"tags,omitempty"`
-	Value float32 `bson:"value,omitempty"`
+	Value float64 `bson:"value,omitempty"`
 }
 
 type mongoConfig struct {
