@@ -34,7 +34,11 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	klog.Infof("Endpoint %s", r.URL.Path)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	json.NewEncoder(w).Encode(conf)
+	if conf.podName != "" {
+		w.Write([]byte(fmt.Sprintf(`{ "version":"%s", "podName": "$s", "date":"%sZ" }`, conf.version, conf.podName, time.Now().Format(time.RFC3339))))
+	} else {
+		w.Write([]byte(fmt.Sprintf(`{ "version":"%s", "date":"%sZ" }`, conf.version, time.Now().Format(time.RFC3339))))
+	}
 }
 
 func getMetrics(w http.ResponseWriter, r *http.Request) {
