@@ -9,7 +9,7 @@ type Metric struct {
 	Metric string `json:"metric"`
 	Source string `json:"source"`
 	Tags map[string]interface{} `json:"tags"`
-	Value float32 `json:"value"`
+	Value float64 `json:"value"`
 }
 
 var dbtype string
