@@ -47,7 +47,7 @@ func PgQuerySource(metric string, begin time.Time, end time.Time, source string)
 
 	defer db.Close()
 
-	sqlStatement := `SELECT date, metric, source, tags, value FROM metrics WHERE metric=$1 AND date >= $2 AND date <= $3 AND source=$4 ORDER BY date;`
+	sqlStatement := `SELECT date, metric, source, tags, value FROM metrics WHERE metric=$1 AND date >= $2 AND date <= $3 AND source=$4 ORDER BY date desc;`
 	rows, err := db.Query(sqlStatement, metric, begin, end, source)
 	if err != nil {
 		return list, err
@@ -83,7 +83,7 @@ func PgQuery(metric string, begin time.Time, end time.Time)  ([]Metric, error) {
 
 	defer db.Close()
 
-	sqlStatement := `SELECT date, metric, source, tags, value FROM metrics WHERE metric=$1 AND date >= $2 AND date <= $3 ORDER BY date;`
+	sqlStatement := `SELECT date, metric, source, tags, value FROM metrics WHERE metric=$1 AND date >= $2 AND date <= $3 ORDER BY date desc;`
 	rows, err := db.Query(sqlStatement, metric, begin, end)
 	if err != nil {
 		return list, err
