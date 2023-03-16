@@ -52,7 +52,7 @@ func MongoQuerySource(metric string, begin time.Time, end time.Time, source stri
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var mongoMetrics []MongoMetric
-	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{ "$gt", begin}, {"$lt", end}}, "source": source})
+	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{ "$gt", begin}, {"$lt", end}}, "source": source}, options.Find().SetSort(bson.D{{"date", -1}}))
 	if err != nil {
 		return metrics, err
 	}
@@ -90,7 +90,7 @@ func MongoQuery(metric string, begin time.Time, end time.Time) ([]Metric, error)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var mongoMetrics []MongoMetric
-	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{ "$gt", begin}, {"$lt", end}}})
+	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{ "$gt", begin}, {"$lt", end}}}, options.Find().SetSort(bson.D{{"date", -1}}))
 	if err != nil {
 		return metrics, err
 	}

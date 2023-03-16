@@ -6,7 +6,7 @@ import (
   "time"
   "net/http"
 	"encoding/json"
-	"retrieve/db"
+	"github.com/randysimpson/retrieve/db"
 	"io/ioutil"
   "github.com/gorilla/mux"
 )

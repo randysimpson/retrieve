@@ -4,8 +4,8 @@ import (
 	"os"
 	"strconv"
 	"k8s.io/klog"
-	"retrieve/db"
-	"retrieve/api"
+	"github.com/randysimpson/retrieve/db"
+	"github.com/randysimpson/retrieve/api"
 )
 
 type Config struct {
@@ -28,7 +28,7 @@ func loadConfig() {
 	config.user = os.Getenv("DB_USER")
 	config.password = os.Getenv("DB_PASS")
 	config.dbname = os.Getenv("DB_NAME")
-	config.version = "2.0.0"
+	config.version = "2.0.1"
 	config.podName = os.Getenv("POD_NAME")
 	config.dbType = os.Getenv("DB_TYPE")
 }
