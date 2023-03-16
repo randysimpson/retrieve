@@ -1,22 +1,22 @@
 package main
 
 import (
+	"github.com/randysimpson/retrieve/api"
+	"github.com/randysimpson/retrieve/db"
+	"k8s.io/klog"
 	"os"
 	"strconv"
-	"k8s.io/klog"
-	"github.com/randysimpson/retrieve/db"
-	"github.com/randysimpson/retrieve/api"
 )
 
 type Config struct {
-	host string
-	port int
-	user string
+	host     string
+	port     int
+	user     string
 	password string
-	dbname string
-	version string
-	podName string
-	dbType string
+	dbname   string
+	version  string
+	podName  string
+	dbType   string
 }
 
 var config Config
