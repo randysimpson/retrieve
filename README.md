@@ -45,12 +45,12 @@ To run the retrieve app using docker on port 3000 for postgres the following env
 
 #### Postgres Command
 
-`docker run -d -p 3000:3000 -e "DB_HOST=192.168.0.20" -e "DB_PORT=31917" -e "DB_NAME=metrics" -e "DB_USER=user" -e "DB_PASS=pass" -e "DB_TYPE=pg" randysimpson/retrieve:latest`
+`docker run -d -p 3000:3000 -e "DB_HOST=192.168.0.20" -e "DB_PORT=5432" -e "DB_NAME=metrics" -e "DB_USER=user" -e "DB_PASS=pass" -e "DB_TYPE=pg" randysimpson/retrieve:latest`
 
 Example:
 
 ```
-pi@pibot:~ $ docker run -d -p 3000:3000 -e "DB_HOST=192.168.0.20" -e "DB_PORT=31917" -e "DB_NAME=metrics" -e "DB_USER=user" -e "DB_PASS=pass" -e "DB_TYPE=pg" randysimpson/retrieve:latest
+pi@pibot:~ $ docker run -d -p 3000:3000 -e "DB_HOST=192.168.0.20" -e "DB_PORT=5432" -e "DB_NAME=metrics" -e "DB_USER=user" -e "DB_PASS=pass" -e "DB_TYPE=pg" randysimpson/retrieve:latest
 fd062193c2efeb1b778cd526f73264547faf2459ae2928ad30f6c6ed0928f366
 ```
 
@@ -73,7 +73,7 @@ fd062193c2efeb1b778cd526f73264547faf2459ae2928ad30f6c6ed0928f366
   Content-Length: 53
   Content-Type: text/plain; charset=utf-8
 
-  { "version":"2.0.0", "date":"2020-08-13T04:33:13ZZ" }
+  { "version":"2.0.1", "date":"2023-03-13T04:33:13ZZ" }
   ```
 
 * `/api/v1/metrics` - Post
