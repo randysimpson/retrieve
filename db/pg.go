@@ -2,6 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 	_ "github.com/lib/pq"
@@ -16,6 +19,21 @@ type pgConfig struct {
 }
 
 var pgConf pgConfig
+
+type Tags map[string]interface{}
+
+func (a Tags) Value() (driver.Value, error) {
+    return json.Marshal(a)
+}
+
+func (a *Tags) Scan(value interface{}) error {
+    b, ok := value.([]byte)
+    if !ok {
+        return errors.New("type assertion to []byte failed")
+    }
+
+    return json.Unmarshal(b, &a)
+}
 
 func SetConfigPG(host string, port int, user string, password string, dbname string) {
 	pgConf = pgConfig{}
@@ -39,7 +57,7 @@ func (c* pgConfig) GetConnectionString() string {
 
 func PgQuerySource(metric string, begin time.Time, end time.Time, source string) ([]Metric, error) {
 	var list []Metric
-	
+
 	db, err := sql.Open("postgres", pgConf.GetConnectionString())
 	if err != nil {
 		return list, err
@@ -56,10 +74,12 @@ func PgQuerySource(metric string, begin time.Time, end time.Time, source string)
 	defer rows.Close()
 	for rows.Next() {
 		var metric Metric
-		err = rows.Scan(&metric.Date, &metric.Metric, &metric.Source, &metric.Tags, &metric.Value)
+		var tags Tags
+		err = rows.Scan(&metric.Date, &metric.Metric, &metric.Source, &tags, &metric.Value)
 		if err != nil {
 			return list, err
 		}
+		metric.Tags = tags
 		list = append(list, metric)
 	}
 
@@ -68,14 +88,14 @@ func PgQuerySource(metric string, begin time.Time, end time.Time, source string)
 		return list, err
 	}
 
-	fmt.Printf("%v\n", list)
+	//fmt.Printf("%v\n", list)
 
 	return list, nil
 }
 
 func PgQuery(metric string, begin time.Time, end time.Time)  ([]Metric, error) {
 	var list []Metric
-	
+
 	db, err := sql.Open("postgres", pgConf.GetConnectionString())
 	if err != nil {
 		return list, err
@@ -92,10 +112,12 @@ func PgQuery(metric string, begin time.Time, end time.Time)  ([]Metric, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var metric Metric
-		err = rows.Scan(&metric.Date, &metric.Metric, &metric.Source, &metric.Tags, &metric.Value)
+		var tags Tags
+		err = rows.Scan(&metric.Date, &metric.Metric, &metric.Source, &tags, &metric.Value)
 		if err != nil {
 			return list, err
 		}
+		metric.Tags = tags
 		list = append(list, metric)
 	}
 
@@ -104,7 +126,7 @@ func PgQuery(metric string, begin time.Time, end time.Time)  ([]Metric, error) {
 		return list, err
 	}
 
-	fmt.Printf("%v\n", list)
+	//fmt.Printf("%v\n", list)
 
 	return list, nil
 }
