@@ -6,34 +6,37 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 	_ "github.com/lib/pq"
+	"time"
 )
 
 type pgConfig struct {
-	host string
-	port int
-	user string
+	host     string
+	port     int
+	user     string
 	password string
-	dbname string
+	dbname   string
 }
-
-var pgConf pgConfig
 
 type Tags map[string]interface{}
 
 func (a Tags) Value() (driver.Value, error) {
-    return json.Marshal(a)
+	return json.Marshal(a)
 }
 
 func (a *Tags) Scan(value interface{}) error {
-    b, ok := value.([]byte)
-    if !ok {
-        return errors.New("type assertion to []byte failed")
-    }
+	if value == nil {
+		return nil
+	}
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
 
-    return json.Unmarshal(b, &a)
+	return json.Unmarshal(b, &a)
 }
+
+var pgConf pgConfig
 
 func SetConfigPG(host string, port int, user string, password string, dbname string) {
 	pgConf = pgConfig{}
@@ -44,7 +47,7 @@ func SetConfigPG(host string, port int, user string, password string, dbname str
 	pgConf.dbname = dbname
 }
 
-func (c* pgConfig) GetConnectionString() string {
+func (c *pgConfig) GetConnectionString() string {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		c.host,
@@ -52,7 +55,7 @@ func (c* pgConfig) GetConnectionString() string {
 		c.user,
 		c.password,
 		c.dbname)
-	return psqlInfo;
+	return psqlInfo
 }
 
 func PgQuerySource(metric string, begin time.Time, end time.Time, source string) ([]Metric, error) {
@@ -93,7 +96,7 @@ func PgQuerySource(metric string, begin time.Time, end time.Time, source string)
 	return list, nil
 }
 
-func PgQuery(metric string, begin time.Time, end time.Time)  ([]Metric, error) {
+func PgQuery(metric string, begin time.Time, end time.Time) ([]Metric, error) {
 	var list []Metric
 
 	db, err := sql.Open("postgres", pgConf.GetConnectionString())

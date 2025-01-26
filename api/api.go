@@ -1,19 +1,19 @@
 package api
 
 import (
-	"k8s.io/klog"
-  "fmt"
-  "time"
-  "net/http"
 	"encoding/json"
+	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/randysimpson/retrieve/db"
 	"io/ioutil"
-  "github.com/gorilla/mux"
+	"k8s.io/klog"
+	"net/http"
+	"time"
 )
 
 type bodyQuery struct {
-	Begin string `json:"beginDate"`
-	End string `json:"endDate,omitempty"`
+	Begin  string `json:"beginDate"`
+	End    string `json:"endDate,omitempty"`
 	Metric string `json:"metric"`
 	Source string `json:"source,omitempty"`
 }
@@ -23,7 +23,7 @@ type config struct {
 	podName string `json:"podName,omitempty"`
 }
 
-var conf config;
+var conf config
 
 func SetConfig(version string, podName string) {
 	conf.version = version
@@ -53,7 +53,7 @@ func getMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var body bodyQuery
 	json.Unmarshal(reqBody, &body)
-	
+
 	begin, err := time.Parse(time.RFC3339, body.Begin)
 	if err != nil {
 		klog.Errorf("Date error: %v\n", err)
@@ -85,25 +85,25 @@ func getMetrics(w http.ResponseWriter, r *http.Request) {
 }
 
 func badRequest(w http.ResponseWriter, r *http.Request, err error) {
-  w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-  w.WriteHeader(http.StatusBadRequest)
-  klog.Infof("%sZ - %s - %s%s - 404 - %s - %+v\n", time.Now().Format(time.RFC3339), r.Method, r.Host, r.URL.Path, r.RemoteAddr, err)
-  w.Write([]byte(fmt.Sprintf(`{ "status":"Error on Request Body", "date":"%sZ" }`, time.Now().Format(time.RFC3339))))
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusBadRequest)
+	klog.Infof("%sZ - %s - %s%s - 404 - %s - %+v\n", time.Now().Format(time.RFC3339), r.Method, r.Host, r.URL.Path, r.RemoteAddr, err)
+	w.Write([]byte(fmt.Sprintf(`{ "status":"Error on Request Body", "date":"%sZ" }`, time.Now().Format(time.RFC3339))))
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
-  w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-  w.WriteHeader(http.StatusNotFound)
-  klog.Infof("%sZ - %s - %s%s - 404 - %s\n", time.Now().Format(time.RFC3339), r.Method, r.Host, r.URL.Path, r.RemoteAddr)
-  w.Write([]byte(fmt.Sprintf(`{ "status":"Not Found", "date":"%sZ" }`, time.Now().Format(time.RFC3339))))
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusNotFound)
+	klog.Infof("%sZ - %s - %s%s - 404 - %s\n", time.Now().Format(time.RFC3339), r.Method, r.Host, r.URL.Path, r.RemoteAddr)
+	w.Write([]byte(fmt.Sprintf(`{ "status":"Not Found", "date":"%sZ" }`, time.Now().Format(time.RFC3339))))
 }
 
 func HandleRequest() {
-  router := mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homePage)
-	
+
 	api := router.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/metrics", getMetrics).Methods("POST")
 
-  http.ListenAndServe(":3000", router)
+	http.ListenAndServe(":3000", router)
 }

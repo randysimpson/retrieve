@@ -3,26 +3,26 @@ package db
 import (
 	"context"
 	"fmt"
-	"time"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"time"
 	//"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type MongoMetric struct {
-	ID primitive.ObjectID `bson:"_id,omitempty"`
-	Date time.Time `bson:"date,omitempty"`
-	Metric string `bson:"metric,omitempty"`
-	Source string `bson:"source,omitempty"`
-	Tags map[string]interface{} `bson:"tags,omitempty"`
-	Value float64 `bson:"value,omitempty"`
+	ID     primitive.ObjectID     `bson:"_id,omitempty"`
+	Date   time.Time              `bson:"date,omitempty"`
+	Metric string                 `bson:"metric,omitempty"`
+	Source string                 `bson:"source,omitempty"`
+	Tags   map[string]interface{} `bson:"tags,omitempty"`
+	Value  float64                `bson:"value,omitempty"`
 }
 
 type mongoConfig struct {
-	host string
-	port int
+	host   string
+	port   int
 	dbname string
 }
 
@@ -52,7 +52,7 @@ func MongoQuerySource(metric string, begin time.Time, end time.Time, source stri
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var mongoMetrics []MongoMetric
-	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{ "$gt", begin}, {"$lt", end}}, "source": source}, options.Find().SetSort(bson.D{{"date", -1}}))
+	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{"$gt", begin}, {"$lt", end}}, "source": source}, options.Find().SetSort(bson.D{{"date", -1}}))
 	if err != nil {
 		return metrics, err
 	}
@@ -90,7 +90,7 @@ func MongoQuery(metric string, begin time.Time, end time.Time) ([]Metric, error)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var mongoMetrics []MongoMetric
-	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{ "$gt", begin}, {"$lt", end}}}, options.Find().SetSort(bson.D{{"date", -1}}))
+	cur, err := collection.Find(ctx, bson.M{"metric": metric, "date": bson.D{{"$gt", begin}, {"$lt", end}}}, options.Find().SetSort(bson.D{{"date", -1}}))
 	if err != nil {
 		return metrics, err
 	}

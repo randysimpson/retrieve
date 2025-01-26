@@ -5,11 +5,11 @@ import (
 )
 
 type Metric struct {
-	Date time.Time `json:"date"`
-	Metric string `json:"metric"`
-	Source string `json:"source"`
-	Tags map[string]interface{} `json:"tags"`
-	Value float64 `json:"value"`
+	Date   time.Time              `json:"date"`
+	Metric string                 `json:"metric"`
+	Source string                 `json:"source"`
+	Tags   map[string]interface{} `json:"tags"`
+	Value  float64                `json:"value"`
 }
 
 var dbtype string
